@@ -1,16 +1,13 @@
 # encoding: utf-8
 require "logstash/outputs/base"
 require "logstash/namespace"
-
+require "datadog/statsd"
 # This is a hack to load the dogstatsd-ruby gem's statsd.rb file into a
 # namespace so as to not clobber the top-level Statsd provided by the
 # much-more-popular Statsd gem. The problem is that both gems have a file named
 # 'statsd.rb' that you are supposed to load. Why did Datadog not name their file
 # differently? Who knows!
 # (see: https://github.com/DataDog/dogstatsd-ruby/pull/3)
-module Datadog
-  module_eval(File.read(Gem.find_files('**/statsd.rb').grep(/dogstatsd/).first))
-end
 
 # dogstatsd is a fork of the statsd protocol which aggregates statistics, such
 # as counters and timers, and ships them over UDP to the dogstatsd-server
@@ -89,7 +86,7 @@ class LogStash::Outputs::Dogstatsd < LogStash::Outputs::Base
 
     metric_opts = {
       :sample_rate => @sample_rate,
-      :tags => @metric_tags.map { |t| event.sprintf(t) }
+      :tags => @metric_tags.collect { |t| event.sprintf(t) }
     }
 
     @increment.each do |metric|

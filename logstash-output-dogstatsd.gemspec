@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
 
   # This version is pinned exactly to ensure that upgrades don't break the
   # gnarly `module_eval` hack in lib/logstash/outputs/dogstatsd.rb.
-  s.add_runtime_dependency 'dogstatsd-ruby', '= 1.6'
+  s.add_runtime_dependency "dogstatsd-ruby", ">= 2.0.0", "< 3.0.0"
 
   s.add_development_dependency 'logstash-devutils'
   s.add_development_dependency 'overcommit'
